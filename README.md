@@ -7,8 +7,7 @@ https://github.com/zogvm/Video-Stream-with-RTSP-and-RTP</br>
 Ubuntu 14/16 was tested</br>
 
 [Package Installation] </br>
-$ sudo apt-get install python2.7 python-pip python-imaging-tk python-opencv</br>
-$ sudo apt-get install python-opencv python-imaging</br>
+$ sudo apt-get install python2.7 python-pip python-imaging-tk python-opencv python-imaging </br>
 $ sudo pip install numpy</br>
 $ sudo apt-get install python-dev libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev libjpeg8 libjpeg62-dev</br>
 $ sudo pip install Pillow</br>
