@@ -3,7 +3,7 @@ import cv2
 class VideoStream:
 	def __init__(self, filename):
 		self.filename = filename
-		self.jpeg_quality = 80
+		self.jpeg_quality = 70
 		self.encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), self.jpeg_quality]
 		try:
 			#self.file = open(filename, 'rb')

@@ -10,7 +10,7 @@ except:
 #tkinter.messagebox
 #from tkinter import messagebox 
 #tkinter.messagebox
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFile
 import socket, threading, sys, traceback, os
 
 from RtpPacket import RtpPacket
@@ -21,8 +21,7 @@ import io
 
 from threading import Thread, Lock
 
-CACHE_FILE_NAME = "cache-"
-CACHE_FILE_EXT = ".jpg"
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class Client:
 
@@ -146,7 +145,8 @@ class Client:
 						temp_data = bytearray(0)	
 
 						self.frameNbr = currFrameNbr
-						self.updateMovie(update_data)
+						threading.Thread(target=self.updateMovie,args=([update_data])).start()
+						#self.updateMovie(update_data)
 
 					else:
 						#print ("marker = 0")
@@ -171,7 +171,9 @@ class Client:
 
 		#img = Image.open(io.BytesIO(byte_arr))
 		#photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)))
+
 		photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)).resize((720,360),Image.ANTIALIAS))
+		#photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)))
 
 		self.label.configure(image = photo, height=400) 
 		#self.label.configure(image = photo, height=288) 

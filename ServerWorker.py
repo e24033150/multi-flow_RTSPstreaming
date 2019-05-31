@@ -126,7 +126,7 @@ class ServerWorker:
 		"""Send RTP packets over UDP."""
 		current_index = 0
 		while True:
-			self.clientInfo['event'].wait(0.015) 
+			self.clientInfo['event'].wait(0.02) 
 			
 			# Stop sending if request is PAUSE or TEARDOWN
 			if self.clientInfo['event'].isSet(): 
