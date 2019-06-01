@@ -86,9 +86,12 @@ class ServerWorker:
 				
 				# Create a new socket for RTP/UDP
 				self.clientInfo["rtpSocket"] = [socket.socket(socket.AF_INET, socket.SOCK_DGRAM) for _ in range(self.clientInfo['flow_num'])]
+
+				### If you want the server to serve multiple clients without fixed RTP ports, please comment out the for loop below
 				for i in range(self.clientInfo['flow_num']):
 					server_address = ('',23456 + i)
 					self.clientInfo["rtpSocket"][i].bind(server_address)
+				
 
 				self.replyRtsp(self.OK_200, seq[1])
 				
