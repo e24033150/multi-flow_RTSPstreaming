@@ -14,11 +14,11 @@ Ubuntu 14 & 16 were tested</br>
 
 [Support]
 ---
-* single/multiple flows (decided by the client)
-* video formats : mkv, mp4, webm, ... (depends on OpenCV)
-* video with 720p/25fps (as far as it goes)
+* Single/multiple flows (decided by the client)
+* Video formats : mkv, mp4, webm, ... (depends on OpenCV)
+* Video with 720p/25fps (as far as it goes)
 * RTSP options : SETUP/PLAY/PAUSE/TEARDOWN
-* multiple clients
+* Multiple clients
 
 [Package Installation]
 ---
@@ -31,7 +31,7 @@ $ sudo apt-get install python-dev libjpeg-dev libfreetype6 libfreetype6-dev zlib
 * **Multiple clients** </br>
   The server serves one client with fixed RTP port(s) in default.
   - If you want to serve multiple clients without fixed RTP port(s), please modify `ServerWorker.py` first </br>
-  $ vi ServerWorker </br>
+  $ vi ServerWorker.py </br>
   Comment out the for loop in the process of PLAY request
   - If you want to change the number of clients it can serve, please modify `Server.py` </br>
   $ vi Server.py </br>
@@ -48,10 +48,10 @@ $ python ClientLauncher.py 172.16.53.2 8554 12345 SampleVideo.mkv 2</br>
 ---
 * **The quality of image**</br>
 $ vi VideoStream.py</br>
-change jpeg_quality</br>
+Change jpeg_quality</br>
 * **The speed of playing the video**</br>
 $ vi ServerWorker.py</br>
-change the time in clientInfo['event'].wait()</br>
+Change the time in clientInfo['event'].wait()</br>
 
 [Future Works]
 ---
