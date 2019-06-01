@@ -3,13 +3,11 @@ import sys, traceback, threading, socket
 
 from VideoStream import VideoStream
 from RtpPacket import RtpPacket
-
-### In general MTU
+### General MTU
 #data_size = 1458
 
-### When MTU decreases by 50 bytes
+### When MTU decreases in some environments
 data_size = 1408
-
 
 class ServerWorker:
 	SETUP = 'SETUP'
@@ -126,7 +124,7 @@ class ServerWorker:
 		"""Send RTP packets over UDP."""
 		current_index = 0
 		while True:
-			self.clientInfo['event'].wait(0.02) 
+			self.clientInfo['event'].wait(0.025) 
 			
 			# Stop sending if request is PAUSE or TEARDOWN
 			if self.clientInfo['event'].isSet(): 
@@ -134,12 +132,12 @@ class ServerWorker:
 				
 			data = self.clientInfo['videoStream'].nextFrame()
 			if data.any(): 
+			
 				#frameNumber = self.clientInfo['videoStream'].frameNbr()
 				#frameNumber = self.frameNum
 				data_bytes = data.tobytes()
 				address = self.clientInfo['rtspSocket'][1][0]
 				port = int(self.clientInfo['rtpPort'])
-
 
 				if len(data_bytes) < data_size:
 					try:

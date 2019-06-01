@@ -6,10 +6,6 @@ except:
         from Tkinter import *
         import tkMessageBox as messagebox
 
-#import tkinter.messagebox
-#tkinter.messagebox
-#from tkinter import messagebox 
-#tkinter.messagebox
 from PIL import Image, ImageTk, ImageFile
 import socket, threading, sys, traceback, os
 
@@ -19,7 +15,6 @@ import numpy as np
 import cv2
 import io
 
-from threading import Thread, Lock
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -43,7 +38,6 @@ class Client:
 	TRANSPORT = "RTP/UDP"
 	
 	
-	
 	# Initiation..
 	def __init__(self, master, serveraddr, serverport, rtpport, filename, flow_num):
 		self.master = master
@@ -60,7 +54,7 @@ class Client:
 		self.teardownAcked = 0
 		self.connectToServer()
 		self.frameNbr = 0
-		self.lock = Lock()
+		self.lock = threading.Lock()
 		
 	def createWidgets(self):
 		"""Build GUI."""
@@ -101,7 +95,6 @@ class Client:
 		"""Teardown button handler."""
 		self.sendRtspRequest(self.TEARDOWN)		
 		self.master.destroy() # Close the gui window
-		#os.remove(CACHE_FILE_NAME + str(self.sessionId) + CACHE_FILE_EXT) # Delete the cache image from video
 
 	def pauseMovie(self):
 		"""Pause button handler."""
@@ -120,12 +113,12 @@ class Client:
 	def listenRtp(self):		
 		"""Listen for RTP packets."""
 
-		#temp_data = bytearray(0)
 		temp_data = bytearray(0)
 		while True:
 			try:
 				#print("LISTENING...")
 				data = self.rtpSocket.recv(65507)
+				
 				if data:
 					rtpPacket = RtpPacket()
 					rtpPacket.decode(data)
@@ -135,23 +128,20 @@ class Client:
 
 					#print ("CURRENT SEQUENCE NUM: " + str(currFrameNbr))
 					if marker == 1:
-						#print ("marker = 1")
-						update_data = temp_data + rtpPacket.getPayload()
-						#print (len(temp_data))
+						threading.Thread(target=self.updateMovie,args=([temp_data + rtpPacket.getPayload()])).start()
+
+						#update_data = temp_data + rtpPacket.getPayload()
 						#if currFrameNbr > self.frameNbr: # Discard the late packet
 							#print ("update")
 							
 						temp_data = None
 						temp_data = bytearray(0)	
 
-						self.frameNbr = currFrameNbr
-						threading.Thread(target=self.updateMovie,args=([update_data])).start()
+						#self.frameNbr = currFrameNbr
+						#threading.Thread(target=self.updateMovie,args=([update_data])).start()
 						#self.updateMovie(update_data)
 
 					else:
-						#print ("marker = 0")
-						#print (len(temp_data))
-						
 						temp_data += rtpPacket.getPayload()
 			except:
 				# Stop listening upon requesting PAUSE or TEARDOWN
@@ -167,17 +157,18 @@ class Client:
 					
 	
 	def updateMovie(self, byte_arr):
+		
 		"""Update the image as video frame in the GUI."""
-
-		#img = Image.open(io.BytesIO(byte_arr))
-		#photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)))
-
+		
 		photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)).resize((720,360),Image.ANTIALIAS))
-		#photo = ImageTk.PhotoImage(Image.open(io.BytesIO(byte_arr)))
-
 		self.label.configure(image = photo, height=400) 
-		#self.label.configure(image = photo, height=288) 
 		self.label.image = photo
+		
+		"""
+		img = cv2.imdecode(np.frombuffer(byte_arr, dtype = np.uint8), 1)
+		cv2.imshow('img', cv2.resize(img,(720,360)))
+		cv2.waitKey()
+		"""
 
 	def connectToServer(self):
 		"""Connect to the Server. Start a new RTSP/TCP session."""

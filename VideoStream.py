@@ -3,7 +3,7 @@ import cv2
 class VideoStream:
 	def __init__(self, filename):
 		self.filename = filename
-		self.jpeg_quality = 70
+		self.jpeg_quality = 90
 		self.encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), self.jpeg_quality]
 		try:
 			#self.file = open(filename, 'rb')
@@ -18,6 +18,7 @@ class VideoStream:
 		"""Get next frame."""
 		#data = self.file.read(5) # Get the framelength from the first 5 bits
 		ret, frame = self.file.read()
+		"""
 		if ret == True:
 			#framelength = int(data)
 							
@@ -26,6 +27,7 @@ class VideoStream:
 			#strings = cv2.imencode('.jpg', frame, self.encode_param)[1]
 			#cpy = strings.copy()
 			self.frameNum += 1
+		"""
 		return cv2.imencode('.jpg', frame, self.encode_param)[1]
 		#return frame
 		
